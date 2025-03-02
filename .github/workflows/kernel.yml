@@ -11,7 +11,7 @@ on:
 jobs:
   Read-configuration:
     name: 🐂 Parse *.config.json
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       CONFIGS: ${{ steps.generate-matrix.outputs.CONFIGS }}
       BUILD_DATE: ${{ steps.generate-builddate.outputs.BUILDDATE }}
@@ -35,7 +35,7 @@ jobs:
 
   Build-Kernel:
     name: "🐎 Build kernel"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - Read-configuration
     strategy:
@@ -88,7 +88,7 @@ jobs:
       - name: ⭐ Install prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl git ftp lftp wget libarchive-tools ccache python2 python2-dev python3
+          sudo apt-get install -y curl git ftp lftp wget libarchive-tools ccache python2.7 python3
           sudo apt-get install -y pngcrush schedtool dpkg-dev liblz4-tool make optipng maven device-tree-compiler 
           sudo apt-get install -y libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc
           sudo apt-get install -y libxml2-utils libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools lzop flex tree
@@ -301,8 +301,8 @@ jobs:
         env:
           ARGS: ${{ steps.generate-args.outputs.ARGS }}
         run: |
-          sudo apt install python2
-          sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+          sudo apt install python2.7
+          sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
           echo "🤔 PATH Variable: $PATH"
           export KBUILD_BUILD_HOST=Github-Action
           export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
@@ -311,7 +311,7 @@ jobs:
           # tree ${{ env.OUT_DIR }}
 
       - name: 💛 Upload Image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
@@ -321,7 +321,7 @@ jobs:
           retention-days: 7
 
       - name: 💙 Upload Image.gz
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
@@ -331,7 +331,7 @@ jobs:
           retention-days: 7
 
       - name: 💙 Upload Image.gz-dtb
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
@@ -341,7 +341,7 @@ jobs:
           retention-days: 7
 
       - name: 💜 Upload dtb
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
@@ -351,7 +351,7 @@ jobs:
           retention-days: 7
 
       - name: ❤️ Upload dtbo.img
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
@@ -361,7 +361,7 @@ jobs:
           retention-days: 7
 
       - name: ☢️ Upload output directory
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env:
           ARCH: ${{ steps.generate-args.outputs.ARCH }}
         with:
@@ -414,7 +414,7 @@ jobs:
       - name: "💾 Upload AnyKernel3 image => (${{ env.BUILD_DATE }})"
         env:
           ANYKERNEL3_FILE: "AnyKernel3-${{ env.KERNEL_NAME }}-${{ env.BUILD_DATE }}"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ env.USE_ANYKERNEL3 == 'true' }}
         with:
           name: "${{ env.ANYKERNEL3_FILE }}"
